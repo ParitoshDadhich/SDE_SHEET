@@ -43,64 +43,29 @@ class Solution {
 
 // method 2
 // time o(nlogn) and space o(n)
-
 class Solution {
     public int[][] merge(int[][] arr) {
-        if(arr.length <= 1)
-            return arr;
+        List<int []> list = new ArrayList<>();
         
-        Arrays.sort(arr, (a, b) -> (a[0] - b[0]));
+        if(arr.length == 0 || arr == null)
+            return list.toArray(new int[0][]);
         
-        List<int[]> list = new ArrayList<>();
-        for(int [] i: arr){
-            if(list.size() == 0 || list.get(list.size() - 1)[1] < i[0])
-                list.add(i);
-            else
-                list.get(list.size() - 1)[1] = Math.max(list.get(list.size() - 1)[1], i[1]);
-        }
+        Arrays.sort(arr, (a, b) -> a[0] - b[0]);
         
-        return list.toArray(new int[list.size()][]);
-    }
-}
-
-
-// another way
-
- 
-public class Solution {
-    public ArrayList<Interval> merge(ArrayList<Interval> intervals) {
-          ArrayList<Interval> result = new ArrayList<>();
+        int start = arr[0][0];
+        int end = arr[0][1];
         
-        // sort list by interval's start time
-        Collections.sort(intervals, new Comparator<Interval>(){
-
-            @Override
-            public int compare(Interval o1, Interval o2) {
-                if (o1.start != o2.start) {
-                    return o1.start - o2.start;
-                } else {
-                    return o1.end - o2.end;
-                }
-            }
-        });
-        
-        for (int i = 0; i < intervals.size() - 1; i++) {
-            Interval i1 = intervals.get(i);
-            Interval i2 = intervals.get(i + 1);
-            if (i1.end < i2.start) {
-                // i1 goes completely before i2
-                result.add(i1);
-            } else {
-                // overlapping, then merge these two intervals
-                i1.start = Math.min(i1.start, i2.start);
-                i1.end = Math.max(i1.end, i2.end);
-                intervals.remove(i + 1);
-                i--;
+        for(int []i: arr){
+            if(i[0] <= end)
+                end = Math.max(end, i[1]);
+            else{
+                list.add(new int[]{start, end});
+                start = i[0];
+                end = i[1];
             }
         }
-        // don't forget to add the last interval which is the merging interval
-        result.add(intervals.get(intervals.size() - 1));
-        return result; 
-
+        
+        list.add(new int[]{start, end});
+        return list.toArray(new int[0][]);
     }
 }
